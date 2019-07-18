@@ -29,7 +29,7 @@ Mixing piped input and arguments:
 
 Debug output is supported:
 
-    export LOGLEVEL=DEBUG && gls -d ../ | ./dupes.py /usr/local/bin /usr/share/dict /usr/sbin
+    export LOGLEVEL=DEBUG && ./dupes.py /usr/local/bin
 
 ## Possible improvements
 
