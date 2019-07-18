@@ -48,7 +48,7 @@ def walk_path(path):
 
 def path_worker(path, hashed_files):
     for file in walk_path(path):
-        fhash = file_worker(file) # runs in *only* one process
+        fhash = file_worker(file)
         hashed_files[file] = fhash
     return hashed_files
 
@@ -93,9 +93,13 @@ if __name__ == '__main__':
     paths = get_paths()
     hashed_files = {}
 
+    results = []
     for path in paths:
-        hashed_files = p.apply_async(path_worker, (path, hashed_files)).get()
+        results.append(p.apply_async(path_worker, (path, hashed_files)))
     
+    for result in results:
+        hashed_files.update(result.get())
+
     log.debug(hashed_files)
     duplicates = get_reversed_multidict(hashed_files)
 
