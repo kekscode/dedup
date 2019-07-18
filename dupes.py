@@ -46,6 +46,12 @@ def walk_path(path):
         for file in filenames:
             yield os.path.join(dirpath, file)
 
+def path_worker(path, hashed_files):
+    for file in walk_path(path):
+        fhash = file_worker(file) # runs in *only* one process
+        hashed_files[file] = fhash
+    return hashed_files
+
 """
 Make a dict containing all hashes which are now keys mapping
 to the paths of file duplicates and return all keys pointing to
@@ -88,12 +94,7 @@ if __name__ == '__main__':
     hashed_files = {}
 
     for path in paths:
-        for file in walk_path(path):
-            fhash = p.apply_async(file_worker, (file,)) # runs in *only* one process
-            try:
-                hashed_files[file] = fhash.get(timeout=30)
-            except mp.context.TimeoutError as e:
-                log.error("We lacked patience and got a multiprocessing.TimeoutError: {}".format(e))
+        hashed_files = p.apply_async(path_worker, (path, hashed_files)).get()
     
     log.debug(hashed_files)
     duplicates = get_reversed_multidict(hashed_files)
