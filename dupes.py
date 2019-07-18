@@ -58,13 +58,14 @@ def path_worker(path):
 def file_worker(file):
     try:
         with open(file, 'rb') as f:
+            log.debug("{}: Calculating sha256)".format(f.name))
             h = hashlib.sha256(f.read())
     except EnvironmentError as e:
        log.error("I/O or OS Error: {}".format(e))
        return e  # Add the error instead of the hash
 
     hash = h.hexdigest()
-    log.debug("{} (sha256:{})".format(file, hash))
+    log.debug("{}: Calculated sha256:{}".format(file, hash))
 
     return hash
 
