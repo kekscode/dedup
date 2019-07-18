@@ -15,7 +15,7 @@ devices in parallel and combine the results at the very end.
 
 Arguments:
 
-    $> ./dupes.py /usr/local/bin /usr/share/dict /usr/sbino
+    $> ./dupes.py /usr/local/bin /usr/share/dict /usr/sbin
 
 Piped input:
 
@@ -23,13 +23,13 @@ Piped input:
 
 Mixing piped input and arguments:
 
-    $> ls -d ../ | ./dupes.py /usr/local/bin /usr/share/dict /usr/sbino
+    $> ls -d ../ | ./dupes.py /usr/local/bin /usr/share/dict /usr/sbin
 
 ## Debug output
 
 Debug output is supported:
 
-    export LOGLEVEL=DEBUG && gls -d ../ | ./dupes.py /usr/local/bin /usr/share/dict /usr/sbino
+    export LOGLEVEL=DEBUG && gls -d ../ | ./dupes.py /usr/local/bin /usr/share/dict /usr/sbin
 
 ## Possible improvements
 
