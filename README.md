@@ -35,4 +35,5 @@ Debug output is supported:
 
 * Find shortest common path in list of paths to avoid processing e. g.: /tmp
   AND /tmp/dir/
+* Add glob filter for ignoring paths
 * Skip all files with 0 bytes (maybe not worth optimizing)
