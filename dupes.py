@@ -91,9 +91,9 @@ def get_reversed_multidict(d):
 def pprint_duplicates(duplicates):
     for hash, paths in duplicates.items():
         print("")
-        print("{}".format(hash), end=' ')
+        print("{};".format(hash), end='')
         for path in paths:
-            print(path, end=' ')
+            print(path, end=';')
     print("")
 
 if __name__ == '__main__':
