@@ -33,6 +33,7 @@ Debug output is supported:
 
 ## Possible improvements
 
+* Add statistics about all found duplicates at the end
 * Find shortest common path in list of paths to avoid processing e. g.: /tmp
   AND /tmp/dir/
 * Add glob filter for ignoring paths

@@ -80,18 +80,21 @@ def get_reversed_multidict(d):
     rev_multidict = {}
     for key, value in d.items():
         rev_multidict.setdefault(value, set()).add(key)
+
     # Check for keys (=hashes) pointing to more than 1 value
-    return [values for key, values in rev_multidict.items() if len(values) > 1]
+    results = {}
+    for k, v in rev_multidict.items():
+        if len(v) > 1:
+            results[k] = v
+    return results
 
 def pprint_duplicates(duplicates):
-    for dupes in duplicates:
-        d = ""
-        for idx, dupe in enumerate(dupes):
-            if idx == len(dupes)-1: 
-                d += dupe
-                break
-            d += dupe + " <-> "
-        print(d)
+    for hash, paths in duplicates.items():
+        print("")
+        print("{}".format(hash), end=' ')
+        for path in paths:
+            print(path, end=' ')
+    print("")
 
 if __name__ == '__main__':
 
