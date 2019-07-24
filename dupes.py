@@ -9,15 +9,17 @@ import hashlib
 import multiprocessing as mp
 from pathlib import Path
 
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"), format="%(asctime)s;%(levelname)s;%(message)s")
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"),
+                    format="%(asctime)s;%(levelname)s;%(message)s")
 log = logging.getLogger(sys.argv[0])
+
 
 def get_paths():
     """Returns a list of pathlib Path objects from stdin and argv"""
 
     rootDirs = []
 
-    # If used inside a UNIX pipe, we read from STDIN 
+    # If used inside a UNIX pipe, we read from STDIN
     if not sys.stdin.isatty():
         for line in sys.stdin:
             p = Path(line.rstrip())
@@ -30,7 +32,7 @@ def get_paths():
             p = Path(arg)
             if p.is_dir:
                 rootDirs.append(p.resolve())
-    
+
     if len(rootDirs) == 0:
         help = """
 usage: dupes.py <path> <another_path>
@@ -40,13 +42,15 @@ The LOGLEVEL=DEBUG environment variable is supported to get debug output.
 """
         print(help)
         sys.exit(-1)
-    
-    return list(dict.fromkeys(rootDirs)) # dedups the list of paths
+
+    return list(dict.fromkeys(rootDirs))  # dedups the list of paths
+
 
 def walk_path(path):
     for dirpath, _, filenames in os.walk(path, followlinks=False):
         for file in filenames:
             yield os.path.join(dirpath, file)
+
 
 def path_worker(path):
     hashed_files = {}
@@ -55,19 +59,21 @@ def path_worker(path):
         hashed_files[file] = fhash
     return hashed_files
 
+
 def file_worker(file):
     try:
         with open(file, 'rb') as f:
             log.debug("{}: Calculating sha256)".format(f.name))
             h = hashlib.sha256(f.read())
     except EnvironmentError as e:
-       log.error("I/O or OS Error: {}".format(e))
-       return e  # Add the error instead of the hash
+        log.error("I/O or OS Error: {}".format(e))
+        return e  # Add the error instead of the hash
 
     hash = h.hexdigest()
     log.debug("{}: Calculated sha256:{}".format(file, hash))
 
     return hash
+
 
 def get_reversed_multidict(d):
     """
@@ -88,6 +94,7 @@ def get_reversed_multidict(d):
             results[k] = v
     return results
 
+
 def pprint_duplicates(duplicates):
     for hash, paths in duplicates.items():
         print("")
@@ -95,6 +102,7 @@ def pprint_duplicates(duplicates):
         for path in paths:
             print(path, end=';')
     print("")
+
 
 if __name__ == '__main__':
 
@@ -104,9 +112,9 @@ if __name__ == '__main__':
 
     mp_results = []
     for path in paths:
-        mp_results.append(wpool.apply_async(path_worker, (path,)))
+        mp_results.append(wpool.apply_async(path_worker, (path, )))
     log.debug("Result objects from async processes: {}".format(mp_results))
-    
+
     for r in mp_results:
         hashed_files.update(r.get())
     log.debug(hashed_files)
